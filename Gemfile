@@ -43,8 +43,11 @@ gem 'jquery-rails'
 # Use SimpleTokenGenerator to generate identifier for specifix models
 gem 'simple_token_generator', github: 'nicosticht/simple_token_generator'
 
-# Use Faker to generate more usefull seed data.
+# Use Faker to generate more useful seed data.
 gem 'faker'
+
+# User name_of_person for presenting names of people in full, familiar, abbreviated, and initialized forms (but without titulation etc)
+gem 'name_of_person'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
