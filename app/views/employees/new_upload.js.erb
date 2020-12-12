@@ -1,0 +1,44 @@
+Dropzone.autoDiscover = false;
+var dropzone;
+
+$("#upload").html("<%= escape_javascript(render 'employees/new_upload') %>").modal();
+
+$('#upload').on('shown.bs.modal', function (e) {
+    dropzone = new Dropzone("form#upload-form", {
+        init: function () {
+            this.on('addedfile', function (file) {
+                $('#start-processing').prop('disabled', false);
+            });
+            this.on('removedfile', function (file) {
+                const files = dropzone.getQueuedFiles();
+                $('#start-processing').prop('disabled', files.length === 0);
+            });
+            this.on('success', function (file) {
+                setTimeout(() => {
+                    $('#upload').modal('hide');
+                    window.location.href = '/employees';
+                }, 1000);
+            });
+            this.on('error', function (file, response) {
+                const files = dropzone.getQueuedFiles();
+                $('#start-processing').prop('disabled', false);
+                $('#start-processing').html('Start Processing');
+            });
+        },
+        url: 'employees/upload',
+        autoDiscover: false,
+        acceptedFiles: '.csv, .xls, .xlsx',
+        addRemoveLinks: true,
+        autoProcessQueue: false,
+        maxFiles: 1
+    });
+});
+
+$('#start-processing').click(function () {
+    const files = dropzone.getQueuedFiles();
+    if (files.length > 0) {
+        dropzone.processQueue();
+        $(this).prop("disabled", true);
+        $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please wait...`);
+    }
+});

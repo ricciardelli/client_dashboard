@@ -1,4 +1,6 @@
 class Client < ApplicationRecord
+  has_person_name
+
   has_many :consultants, dependent: :destroy
   has_many :employees, through: :consultants
   has_many :contractors, through: :consultants
@@ -15,10 +17,6 @@ class Client < ApplicationRecord
   scope :for_given_contractors, -> (contractor_ids) { joins(:contractors).where('contractors.id' => contractor_ids) }
   scope :for_company, -> (company_id) { joins(:companies).where('companies.id' => company_id) }
   scope :for_partner_company, -> (partner_company_id) { joins(:partner_companies).where('partner_companies.id' => partner_company_id) }
-
-  def full_name
-    "#{first_name} #{last_name}"
-  end
 
   private
 

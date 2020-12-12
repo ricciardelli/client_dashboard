@@ -5,8 +5,8 @@ ruby '2.5.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.4'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.3.6'
+# Use pg as the database for Active Record
+gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.12'
 # Use SCSS for stylesheets
@@ -43,10 +43,21 @@ gem 'jquery-rails'
 # Use SimpleTokenGenerator to generate identifier for specifix models
 gem 'simple_token_generator', github: 'nicosticht/simple_token_generator'
 
-# Use Faker to generate more usefull seed data.
+# Use Faker to generate more useful seed data.
 gem 'faker'
 
+# User name_of_person for presenting names of people in full, familiar, abbreviated, and initialized forms (but without titulation etc)
+gem 'name_of_person'
+
+# Use dropzone-rails to spice your Rails apps with some Dropzone sugar!
+gem 'dropzonejs-rails'
+
+# Roo provides an interface to spreadsheets of several sorts.
+gem 'roo'
+
 group :development, :test do
+  # Use sqlite3 as the database for Active Record
+  gem 'sqlite3', '~> 1.3.6'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Use rspec for testing
@@ -63,7 +74,6 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
