@@ -27,8 +27,6 @@ class EmployeesController < ApplicationController
     file = params[:file]
 
     begin
-      # TODO: Do we need to store the uploaded file for some recording reasons?
-      # store_file file
       data = read_file file
       store_employee_data data
       flash[:notice] = 'Employee data has been uploaded successfully.'
@@ -104,16 +102,9 @@ class EmployeesController < ApplicationController
     params.require(:employee).permit(:identifier, :first_name, :last_name, :company_id)
   end
 
-  # Stores the uploaded file into the filesystem
-  def store_file(uploaded_file)
-    File.open(Rails.root.join('public', 'uploads', uploaded_file.original_filename), 'wb') do |file|
-      file.write(uploaded_file.read)
-    end
-  end
-
   # Reads a file and returns a Roo::Spreadsheet object that can be manipulated by the application
-  def read_file(file, read_from_storage: false)
-    spreadsheet = Roo::Spreadsheet.open read_from_storage ? "./public/uploads/#{file.original_filename}" : file
+  def read_file(file)
+    spreadsheet = Roo::Spreadsheet.open file
     raise Employee::InvalidFileError if spreadsheet.first_row.nil?
     raise Employee::NoHeadersError unless spreadsheet.row(1).any? && headers_present?(spreadsheet)
     raise Employee::NoContentError unless spreadsheet.row(2).any?

@@ -14,7 +14,6 @@ $('#upload').on('shown.bs.modal', function (e) {
                 $('#start-processing').prop('disabled', files.length === 0);
             });
             this.on('success', function (file) {
-                // TODO: Should I do both things at the same time?
                 setTimeout(() => {
                     $('#upload').modal('hide');
                     window.location.href = '/employees';
