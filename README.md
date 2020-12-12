@@ -1,10 +1,9 @@
 # Project Title
 
-This is part of a code challenge. It's a basic rails application with the following Models: Company, Employee,
-PartnerCompany, Contractor and Client
+This is part of a code challenge. It's a basic Rails application with the following models: Company, Employee, PartnerCompany, Contractor and Client
 
-- Authentication;
-- Simple UI with bootstrap
+- Authentication
+- Simple UI with Bootstrap
 - CRUD for all models
 
 ## Getting Started

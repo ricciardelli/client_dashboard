@@ -49,6 +49,12 @@ gem 'faker'
 # User name_of_person for presenting names of people in full, familiar, abbreviated, and initialized forms (but without titulation etc)
 gem 'name_of_person'
 
+# Use dropzone-rails to spice your Rails apps with some Dropzone sugar!
+gem 'dropzonejs-rails'
+
+# Roo provides an interface to spreadsheets of several sorts.
+gem 'roo'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

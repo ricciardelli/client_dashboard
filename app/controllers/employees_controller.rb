@@ -16,6 +16,33 @@ class EmployeesController < ApplicationController
   def show
   end
 
+  def new_upload
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
+
+  def upload
+    file = params[:file]
+
+    begin
+      # TODO: Do we need to store the uploaded file for some recording reasons?
+      # store_file file
+      data = read_file file
+      store_employee_data data
+      flash[:notice] = 'Employee data has been uploaded successfully.'
+      render json: flash
+    rescue Employee::EmployeeError => error
+      render json: { error: error.message }, status: error.status and return
+    rescue ActiveRecord::RecordInvalid
+      render json: { error: 'Cannot save information on the database, invalid data' }, status: :bad_request and return
+    rescue => error
+      logger.error error.message
+      render json: { error: 'Unknown error' }, status: :internal_server_error and return
+    end
+  end
+
   # GET /employees/new
   def new
     @employee = Employee.new
@@ -66,13 +93,45 @@ class EmployeesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_employee
-      @employee = Employee.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def employee_params
-      params.require(:employee).permit(:identifier, :first_name, :last_name, :company_id)
+  # Use callbacks to share common setup or constraints between actions.
+  def set_employee
+    @employee = Employee.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def employee_params
+    params.require(:employee).permit(:identifier, :first_name, :last_name, :company_id)
+  end
+
+  # Stores the uploaded file into the filesystem
+  def store_file(uploaded_file)
+    File.open(Rails.root.join('public', 'uploads', uploaded_file.original_filename), 'wb') do |file|
+      file.write(uploaded_file.read)
     end
+  end
+
+  # Reads a file and returns a Roo::Spreadsheet object that can be manipulated by the application
+  def read_file(file, read_from_storage: false)
+    spreadsheet = Roo::Spreadsheet.open read_from_storage ? "./public/uploads/#{file.original_filename}" : file
+    raise Employee::InvalidFileError if spreadsheet.first_row.nil?
+    raise Employee::NoHeadersError unless spreadsheet.row(1).any? && headers_present?(spreadsheet)
+    raise Employee::NoContentError unless spreadsheet.row(2).any?
+    spreadsheet
+  end
+
+  # Stores the given employee data into the database
+  def store_employee_data(employees)
+    headers = Hash[employees.row(1).collect { |e| [e, e] }]
+    Employee.transaction do
+      employees.parse(headers).each do |employee|
+        employee['consultant_ids'] = employee['consultant_ids'].split(',') if employee['consultant_ids'].is_a? String
+        Employee.create! employee
+      end
+    end
+  end
+
+  def headers_present?(spreadsheet)
+    Employee::REQUIRED_FIELDS.sort == spreadsheet.row(1).map(&:to_s).map(&:to_sym).sort
+  end
 end

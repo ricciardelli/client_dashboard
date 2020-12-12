@@ -1,4 +1,6 @@
 class Contractor < ApplicationRecord
+  has_person_name
+
   belongs_to :partner_company
   has_many :consultants, dependent: :destroy
   has_many :clients, through: :consultants

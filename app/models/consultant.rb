@@ -3,12 +3,11 @@ class Consultant < ApplicationRecord
   belongs_to :contractor, optional: true
   belongs_to :employee, optional: true
 
-
   def full_name
     if contractor.present?
-      "#{contractor.first_name} #{contractor.last_name}"
+      contractor.name.full
     else
-      "#{employee.first_name} #{employee.last_name}"
+      employee.name.full
     end
   end
 
